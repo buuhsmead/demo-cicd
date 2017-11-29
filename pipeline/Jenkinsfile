@@ -11,7 +11,7 @@ node ("maven") {
 		
    }  		
    // define maven with custom settings.xml (using this path as convention.. define a env var if desired...)
-   def mvnCmd = "mvn -s ${WORKSPACE}/cicd/maven/settings.xml" 
+   def mvnCmd = "mvn -s ${WORKSPACE}/cicd/maven/settings.xml -Dsettings.security=/etc/mvn/security-settings.xml" 
 
    stage("Maven build") {
 
@@ -113,8 +113,12 @@ node ("nodejs") {
    }
 
    stage("Integration tests in *${params.TEST_PROJECT}*") {
-     
+	   tr {
       newman.runTest(params.POSTMAN_TESTS_COLLECTION, params.POSTMAN_TEST_ENVIRONMENT_CONFIG)
+		 } catch (Exception e) {
+		   println("An error detected : $e.message")
+		   println "Are we going to the next step"
+		 }
         
    }
 
@@ -151,11 +155,18 @@ node ("nodejs") {
    }
 
    stage("Integration tests against alternate pods in *${params.PROD_PROJECT}*") {
+		 try {
+		 
       if (redeploy) {
             newman.runTest(params.POSTMAN_TESTS_COLLECTION, params.POSTMAN_ALTPROD_ENVIRONMENT_CONFIG)
       } else {
             newman.runTest(params.POSTMAN_TESTS_COLLECTION, params.POSTMAN_PROD_ENVIRONMENT_CONFIG)
       } 
+			 
+		 } catch (Exception e) {
+		   println("An error detected : $e.message")
+		   println "Are we going to the next step"
+		 }
       
    }
 
@@ -186,8 +197,12 @@ node ("nodejs") {
 
    stage("Integration tests in *${params.PROD_PROJECT}*") {
        
+		 try {
       newman.runTest(params.POSTMAN_TESTS_COLLECTION, params.POSTMAN_PROD_ENVIRONMENT_CONFIG)
-      
+		 } catch (Exception e) {
+		   println("An error detected : $e.message")
+		   println "Are we going to the next step"
+		 }
    }
 
 
