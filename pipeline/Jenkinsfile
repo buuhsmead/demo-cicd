@@ -86,13 +86,13 @@ node ("nodejs") {
 
    stage("Integration tests in *${params.DEV_PROJECT}*") {
 	   try {
-      newman.runTest(params.POSTMAN_TESTS_COLLECTION, params.POSTMAN_DEV_ENVIRONMENT_CONFIG)
+      		newman.runTest(params.POSTMAN_TESTS_COLLECTION, params.POSTMAN_DEV_ENVIRONMENT_CONFIG)
 	   } catch (Exception e) {
 		   println("An error detected : $e.message")
 		   println "Are we going to the next step"
 	   } finally {
-		   println("in the finally and going to next step aka deploy to TEST_PROJECT"
-			   }
+		   println("in the finally and going to next step aka deploy to TEST_PROJECT")
+	}
    }
 
    //stage('Approval required') {
