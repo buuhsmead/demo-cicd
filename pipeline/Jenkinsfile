@@ -113,7 +113,7 @@ node ("nodejs") {
    }
 
    stage("Integration tests in *${params.TEST_PROJECT}*") {
-	   tr {
+	   try {
       newman.runTest(params.POSTMAN_TESTS_COLLECTION, params.POSTMAN_TEST_ENVIRONMENT_CONFIG)
 		 } catch (Exception e) {
 		   println("An error detected : $e.message")
